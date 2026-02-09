@@ -7,25 +7,25 @@ public class Location {
     private String address;
     private String city;
     private String province;
-    private String telphone;
+    private String telephone;
     private String email;
 
-    public Location(Long id, String name, String address, String city, String province, String telphone, String email) {
+    public Location(Long id, String name, String address, String city, String province, String telephone, String email) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.city = city;
         this.province = province;
-        this.telphone = telphone;
+        this.telephone = telephone;
         this.email = email;
     }
 
-    public Location(String name, String address, String city, String province, String telphone, String email) {
+    public Location(String name, String address, String city, String province, String telephone, String email) {
         this.name = name;
         this.address = address;
         this.city = city;
         this.province = province;
-        this.telphone = telphone;
+        this.telephone = telephone;
         this.email = email;
     }
 
@@ -65,12 +65,12 @@ public class Location {
         this.province = province;
     }
 
-    public String getTelphone() {
-        return telphone;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setTelphone(String telphone) {
-        this.telphone = telphone;
+    public void setTelephone(String telphone) {
+        this.telephone = telphone;
     }
 
     public String getEmail() {
