@@ -9,5 +9,4 @@ public interface LocationRepositoryPort {
     void save(Location location);
     Optional<Location> findById(Long id);
     List<Location> findAll();
-    void delete(Long id);
 }

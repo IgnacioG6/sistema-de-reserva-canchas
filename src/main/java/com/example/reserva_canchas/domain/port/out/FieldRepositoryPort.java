@@ -9,5 +9,4 @@ public interface FieldRepositoryPort {
     void save(Field field);
     Optional<Field> findById(Long id);
     List<Field> findAll();
-    void delete(Long id);
 }

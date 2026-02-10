@@ -8,23 +8,39 @@ public class User {
     private String name;
     private String telephone;
     private String address;
+    private boolean active;
 
-    public User(Long id, String email, String password, String name, String telephone, String address) {
+    public User(Long id, String email, String password,
+                String name, String telephone, String address) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
+        this.active = true;
+
     }
 
-    public User(String email, String password, String name, String telephone, String address) {
+    public User(String email, String password, String name,
+                String telephone, String address) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
+        this.active = true;
     }
+
+    public void desactivate() {
+        if (!this.active) {
+            throw new IllegalStateException("This user is now deactivated");
+        }
+
+        this.active = false;
+
+    }
+
 
     public Long getId() {
         return id;
@@ -73,4 +89,13 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
+

@@ -10,8 +10,6 @@ public interface ReservationRepositoryPort {
     Reservation save(Reservation reservation);
     Optional<Reservation> findById(Long id);
     List<Reservation> findAll();
-    void delete(Long id);
-    List<Reservation> getReservationsByFieldAndDate();
     List<Reservation> findByUserId(Long userId);
     List<Reservation> findByDate(LocalDate date);
     List<Reservation> findByFieldIdAndDate(Long fieldId, LocalDate date);
