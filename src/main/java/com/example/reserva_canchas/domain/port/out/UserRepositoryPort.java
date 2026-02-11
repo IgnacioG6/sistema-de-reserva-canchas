@@ -9,6 +9,6 @@ public interface UserRepositoryPort {
     User save(User user);
     Optional<User> findById(Long id);
     List<User> findAll();
-    void delete(Long id);
     boolean existsByEmail(String email);
+    List<User> findByActive();
 }

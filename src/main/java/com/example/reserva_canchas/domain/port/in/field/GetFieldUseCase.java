@@ -8,7 +8,7 @@ import java.util.List;
 public interface GetFieldUseCase {
 
     List<Field> getFields();
-    Field getFieldById(String id);
+    Field getFieldById(Long id);
     List<Field> getFieldsByType(TypeField type);
 
 }

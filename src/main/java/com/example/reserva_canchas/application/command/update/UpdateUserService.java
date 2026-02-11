@@ -23,12 +23,18 @@ public class UpdateUserService implements UpdateUserUseCase {
         User user = userRepositoryPort.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        if (userRepositoryPort.existsByEmail(email) && !user.getEmail().equals(email)) {
-            throw new EmailDuplicateException("Email duplicated");
+        if (!user.getEmail().equals(email)) {
+            if (userRepositoryPort.existsByEmail(email)) {
+                throw new EmailDuplicateException(email);
+            }
+
+            user.setEmail(email);
         }
 
-        user.setEmail(email);
-        user.setTelephone(telephone);
+        if (!user.getTelephone().equals(telephone)) {
+            user.setTelephone(telephone);
+        }
+
 
         return userRepositoryPort.save(user);
 

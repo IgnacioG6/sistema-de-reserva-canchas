@@ -8,5 +8,6 @@ public interface GetUserUseCase {
 
     List<User> getUser();
     User  getUserById(Long id);
+    List<User> getUserActive();
 
 }
