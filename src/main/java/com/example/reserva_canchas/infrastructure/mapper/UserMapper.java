@@ -32,7 +32,9 @@ public class UserMapper {
                 entity.getPassword(),
                 entity.getName(),
                 entity.getTelephone(),
-                entity.getAddress());
+                entity.getAddress(),
+                entity.isActive()
+        );
     }
 
 

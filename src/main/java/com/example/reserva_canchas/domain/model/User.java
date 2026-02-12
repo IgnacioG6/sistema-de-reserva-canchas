@@ -11,14 +11,14 @@ public class User {
     private boolean active;
 
     public User(Long id, String email, String password,
-                String name, String telephone, String address) {
+                String name, String telephone, String address, boolean active) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
-        this.active = true;
+        this.active = active;
 
     }
 

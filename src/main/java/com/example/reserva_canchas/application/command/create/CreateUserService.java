@@ -5,7 +5,9 @@ import com.example.reserva_canchas.domain.exception.InvalidPasswordException;
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.CreateUserUseCase;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CreateUserService implements CreateUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
