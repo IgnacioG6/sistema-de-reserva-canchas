@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.mapper;
 
 import com.example.reserva_canchas.domain.model.Reservation;
+import com.example.reserva_canchas.infrastructure.dto.response.ReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.entity.ReservationEntity;
 
 public class ReservationMapper {
@@ -22,7 +23,7 @@ public class ReservationMapper {
                 reservation.getDateCreation());
     }
 
-    public static Reservation toEntity(ReservationEntity entity) {
+    public static Reservation toDomain(ReservationEntity entity) {
 
         if(entity == null) return null;
 
@@ -37,6 +38,19 @@ public class ReservationMapper {
                 entity.getStatus(),
                 entity.getPriceTotal(),
                 entity.getDateCreation());
+    }
+
+    public static ReservationResponseDTO  toResponse(Reservation reservation) {
+        if(reservation == null) return null;
+
+        return new ReservationResponseDTO(
+                reservation.getUser().getName(),
+                reservation.getField().getName(),
+                reservation.getField().getType().toString(),
+                reservation.getStartTime(),
+                reservation.getDate(),
+                reservation.getPriceTotal()
+        );
     }
 
 }
