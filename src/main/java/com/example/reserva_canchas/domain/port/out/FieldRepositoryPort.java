@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FieldRepositoryPort {
-    void save(Field field);
+    Field save(Field field);
     Optional<Field> findById(Long id);
     List<Field> findAll();
     List<Field> findByType(TypeField type);
