@@ -1,6 +1,5 @@
 package com.example.reserva_canchas.infrastructure.entity;
 
-import com.example.reserva_canchas.domain.model.Location;
 import com.example.reserva_canchas.domain.model.enums.TypeField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
