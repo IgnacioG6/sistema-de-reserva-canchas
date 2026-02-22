@@ -1,6 +1,5 @@
 package com.example.reserva_canchas.infrastructure.repository.interfaces;
 
-import com.example.reserva_canchas.domain.model.Field;
 import com.example.reserva_canchas.domain.model.enums.TypeField;
 import com.example.reserva_canchas.infrastructure.entity.FieldEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

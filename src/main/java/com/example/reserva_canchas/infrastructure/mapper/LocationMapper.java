@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.mapper;
 
 import com.example.reserva_canchas.domain.model.Location;
+import com.example.reserva_canchas.infrastructure.dto.response.LocationResponseDTO;
 import com.example.reserva_canchas.infrastructure.entity.LocationEntity;
 
 public class LocationMapper {
@@ -32,7 +33,23 @@ public class LocationMapper {
                 entity.getTelephone(),
                 entity.getEmail()
         );
+    }
+
+    public static LocationResponseDTO toResponse(Location location) {
+
+        if(location == null) return null;
+
+        return new LocationResponseDTO(
+                location.getId(),
+                location.getName(),
+                location.getAddress(),
+                location.getCity(),
+                location.getProvince(),
+                location.getTelephone(),
+                location.getEmail()
+        );
 
 
     }
+
 }

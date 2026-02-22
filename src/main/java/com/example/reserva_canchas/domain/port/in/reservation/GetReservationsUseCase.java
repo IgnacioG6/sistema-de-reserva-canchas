@@ -12,6 +12,6 @@ public interface GetReservationsUseCase {
     List<Reservation>  getReservationsByUserId(Long id);
     List<Reservation> getReservationsByDate(LocalDate date);
     List<Reservation> getReservationsByFieldAndDate(Long fieldId, LocalDate date);
-
+    List<Reservation> getReservationsByLocationId(Long locationId);
 
 }

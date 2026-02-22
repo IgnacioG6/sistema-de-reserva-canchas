@@ -98,7 +98,18 @@ public class ReservationController {
     }
 
 
-    @PatchMapping("/{id}/cancel")
+    @GetMapping("/location/{id}")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByLocation(@PathVariable Long id){
+        List<ReservationResponseDTO> reservations = getReservation.getReservationsByLocationId(id).stream()
+                .map(ReservationMapper::toResponse)
+                .toList();
+
+        return  ResponseEntity.ok(reservations);
+    }
+
+
+
+    @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id){
         cancelReservation.cancelReservation(id);
         return ResponseEntity.ok().build();
