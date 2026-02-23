@@ -4,7 +4,9 @@ import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.ChangePasswordUseCase;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ChangePasswordService implements ChangePasswordUseCase {
 
     private final UserRepositoryPort userRepositoryPort;

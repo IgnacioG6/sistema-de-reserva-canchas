@@ -41,6 +41,21 @@ public class User {
 
     }
 
+    public void updatePassword(String oldPasswordProvided, String newPassword) {
+        if(oldPasswordProvided.equals(newPassword)) {
+            throw new IllegalArgumentException("The password cannot be the same as the previous one.");
+        }
+
+        if(newPassword.length() < 6) {
+            throw new IllegalArgumentException("The password cannot be less than 6 characters.");
+        }
+
+        if (!password.equals(oldPasswordProvided)) {
+            throw new IllegalArgumentException("The passwords don't match.");
+        }
+        this.password = newPassword;
+    }
+
 
     public Long getId() {
         return id;

@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping
+@RequestMapping("/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
@@ -37,6 +39,21 @@ public class LocationController {
 
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LocationResponseDTO> getLocationById(@PathVariable Long id){
+        Location location = getLocationUseCase.getLocationById(id);
+        return ResponseEntity.ok(LocationMapper.toResponse(location));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LocationResponseDTO>> getLocations(){
+
+        List<LocationResponseDTO> locations = getLocationUseCase.getLocations().stream().map(LocationMapper::toResponse).toList();
+
+        return ResponseEntity.ok(locations);
+
+    }
 
 
 }

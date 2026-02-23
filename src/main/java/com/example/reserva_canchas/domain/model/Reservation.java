@@ -54,6 +54,8 @@ public class Reservation {
             throw new IllegalStateException("Past reservations cannot be cancelled");
         }
 
+        setStatus(ReservationStatus.CANCELLED);
+
     }
 
     public Long getId() {
