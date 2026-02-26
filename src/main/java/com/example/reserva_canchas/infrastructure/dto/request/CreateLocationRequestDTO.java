@@ -16,6 +16,7 @@ public record CreateLocationRequestDTO(
         @NotBlank
         String telephone,
 
+        @NotBlank
         @Email
         String email
 ) {

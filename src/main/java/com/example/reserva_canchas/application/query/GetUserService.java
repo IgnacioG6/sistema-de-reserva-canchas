@@ -18,7 +18,7 @@ public class GetUserService implements GetUserUseCase {
     }
 
     @Override
-    public List<User> getUser() {
+    public List<User> getUsers() {
         return userRepositoryPort.findAll();
     }
 

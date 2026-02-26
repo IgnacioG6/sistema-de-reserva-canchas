@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface GetUserUseCase {
 
-    List<User> getUser();
-    User  getUserById(Long id);
+    List<User> getUsers();
+    User getUserById(Long id);
     List<User> getUserActive();
 
 }

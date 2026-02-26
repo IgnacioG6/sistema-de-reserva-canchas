@@ -30,7 +30,6 @@ public class GetFieldService implements GetFieldUseCase {
 
     @Override
     public List<Field> getFieldsByType(TypeField type) {
-        List<Field> byType = fieldRepositoryPort.findByType(type);
-        return byType;
+        return fieldRepositoryPort.findByType(type);
     }
 }
