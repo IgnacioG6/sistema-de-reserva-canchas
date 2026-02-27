@@ -15,7 +15,6 @@ public class FieldMapper {
                 field.getId(),
                 field.getName(),
                 field.getType(),
-                LocationMapper.toEntity(field.getLocation()),
                 field.getPrice(),
                 field.isActive());
     }
@@ -28,7 +27,6 @@ public class FieldMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getType(),
-                LocationMapper.toDomain(entity.getLocation()),
                 entity.getPrice(),
                 entity.isActive());
 
@@ -43,9 +41,6 @@ public class FieldMapper {
                 field.getId(),
                 field.getName(),
                 field.getType().toString(),
-                field.getLocation().getAddress(),
-                field.getLocation().getCity(),
-                field.getLocation().getProvince(),
                 field.getPrice()
                 );
 

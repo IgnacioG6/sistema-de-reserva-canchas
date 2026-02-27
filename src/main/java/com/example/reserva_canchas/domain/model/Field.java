@@ -10,23 +10,20 @@ public class Field {
     private Long id;
     private String name;
     private TypeField type;
-    private Location location;
     private BigDecimal price;
     private boolean active;
 
-    public Field(Long id, String name, TypeField type, Location location, BigDecimal price, boolean active) {
+    public Field(Long id, String name, TypeField type, BigDecimal price, boolean active) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.location = location;
         this.price = price;
         this.active = active;
     }
 
-    public Field(String name, TypeField type, Location location, BigDecimal price, boolean active) {
+    public Field(String name, TypeField type, BigDecimal price, boolean active) {
         this.name = name;
         this.type = type;
-        this.location = location;
         this.price = price;
         this.active = active;
     }
@@ -49,10 +46,6 @@ public class Field {
 
     public void setType(TypeField type) {
         this.type = type;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     public BigDecimal getPrice() {

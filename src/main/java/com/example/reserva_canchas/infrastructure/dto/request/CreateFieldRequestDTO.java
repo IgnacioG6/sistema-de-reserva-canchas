@@ -15,9 +15,6 @@ public record CreateFieldRequestDTO(
         TypeField type,
 
         @NotNull
-        Long idLocation,
-
-        @NotNull
         @DecimalMin("50")
         BigDecimal price
 

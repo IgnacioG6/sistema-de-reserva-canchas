@@ -27,10 +27,6 @@ public class FieldEntity {
     @Enumerated(EnumType.STRING)
     private TypeField type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private LocationEntity location;
-
     @Column(nullable = false)
     private BigDecimal price;
 

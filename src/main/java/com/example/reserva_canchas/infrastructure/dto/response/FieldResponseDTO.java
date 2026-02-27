@@ -8,9 +8,6 @@ public record FieldResponseDTO(
         Long id,
         String name,
         String type,
-        String address,
-        String city,
-        String province,
         BigDecimal price
 
 ) {

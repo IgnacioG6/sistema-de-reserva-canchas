@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 
 public interface CreateFieldUseCase {
 
-    Field create(String name, TypeField type, Long locationId, BigDecimal price);
+    Field create(String name, TypeField type, BigDecimal price);
 }

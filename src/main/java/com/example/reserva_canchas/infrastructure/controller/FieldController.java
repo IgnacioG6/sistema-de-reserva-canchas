@@ -31,7 +31,6 @@ public class FieldController {
         Field field = createFieldUseCase.create(
                 fieldDto.name(),
                 fieldDto.type(),
-                fieldDto.idLocation(),
                 fieldDto.price());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(FieldMapper.toResponse(field));
