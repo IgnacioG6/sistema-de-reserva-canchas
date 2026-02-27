@@ -2,6 +2,7 @@ package com.example.reserva_canchas.infrastructure.controller;
 
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.*;
+import com.example.reserva_canchas.infrastructure.dto.request.ChangePasswordRequestDTO;
 import com.example.reserva_canchas.infrastructure.dto.request.CreateUserRequestoDTO;
 import com.example.reserva_canchas.infrastructure.dto.request.UpdateUserRequestDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.UserResponseDTO;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -57,15 +58,29 @@ public class UserController {
         return ResponseEntity.ok(getUserUseCase.getUsers().stream().map(UserMapper::toResponse).toList());
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateUser(@Valid @RequestBody UpdateUserRequestDTO userDto){
+    @PutMapping("{id}")
+    public ResponseEntity<Void> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequestDTO userDto){
 
+        updateUserUseCase.update(id,userDto.email(),userDto.telephone());
 
-
+        return ResponseEntity.noContent().build();
     }
 
 
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(@PathVariable Long id,@Valid @RequestBody ChangePasswordRequestDTO passwordDto){
 
+        changePasswordUseCase.changePassword(id,passwordDto.oldPassword(),passwordDto.newPassword());
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> desactivateUser(@PathVariable Long id){
+        desactivateUserUseCase.desactivateUser(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
