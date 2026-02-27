@@ -43,8 +43,4 @@ public class GetReservationService implements GetReservationsUseCase {
         return reservationRepositoryPort.findByFieldIdAndDate(fieldId, date);
     }
 
-    @Override
-    public List<Reservation> getReservationsByLocationId(Long locationId) {
-        return reservationRepositoryPort.getReservationsByLocationId(locationId);
-    }
 }

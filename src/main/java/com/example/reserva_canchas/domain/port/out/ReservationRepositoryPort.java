@@ -13,6 +13,5 @@ public interface ReservationRepositoryPort {
     List<Reservation> findByUserId(Long userId);
     List<Reservation> findByDate(LocalDate date);
     List<Reservation> findByFieldIdAndDate(Long fieldId, LocalDate date);
-    List<Reservation> getReservationsByLocationId(Long locationId);
 }
 

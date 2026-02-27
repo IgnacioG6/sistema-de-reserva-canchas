@@ -22,9 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationController {
 
-    private final CancelReservationUseCase  cancelReservation;
+    private final CancelReservationUseCase cancelReservation;
     private final CreateReservationUseCase createReservation;
-    private final GetReservationsUseCase  getReservation;
+    private final GetReservationsUseCase getReservation;
 
 
     @PostMapping
@@ -35,8 +35,7 @@ public class ReservationController {
                 request.fieldId(),
                 request.date(),
                 request.startTime(),
-                request.endTime(),
-                request.priceTotal()
+                request.endTime()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -46,12 +45,10 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<ReservationResponseDTO>> getAllReservations() {
 
-        List<ReservationResponseDTO> reservations = getReservation.getReservations()
+        return ResponseEntity.ok(getReservation.getReservations()
                 .stream()
                 .map(ReservationMapper::toResponse)
-                .toList();
-
-        return ResponseEntity.ok(reservations);
+                .toList());
     }
 
     @GetMapping("/{id}")
@@ -74,39 +71,24 @@ public class ReservationController {
     @GetMapping("/date/{date}")
     public ResponseEntity<List<ReservationResponseDTO>> getReservationsByDate(
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-            ) {
+    ) {
 
-        List<ReservationResponseDTO> reservations = getReservation.getReservationsByDate(date)
+        return ResponseEntity.ok(getReservation.getReservationsByDate(date)
                 .stream()
                 .map(ReservationMapper::toResponse)
-                .toList();
-
-        return ResponseEntity.ok(reservations);
+                .toList());
     }
 
     @GetMapping("/field/{id}")
     public ResponseEntity<List<ReservationResponseDTO>> getReservationsByFieldAndDate(
             @PathVariable Long fieldId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ){
-        List<ReservationResponseDTO> reservations = getReservation.getReservationsByFieldAndDate(fieldId, date).stream()
+    ) {
+        return ResponseEntity.ok(getReservation.getReservationsByFieldAndDate(fieldId, date).stream()
                 .map(ReservationMapper::toResponse)
-                .toList();
-
-        return ResponseEntity.ok(reservations);
+                .toList());
 
     }
-
-
-    @GetMapping("/location/{id}")
-    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByLocation(@PathVariable Long id){
-        List<ReservationResponseDTO> reservations = getReservation.getReservationsByLocationId(id).stream()
-                .map(ReservationMapper::toResponse)
-                .toList();
-
-        return  ResponseEntity.ok(reservations);
-    }
-
 
 
     @PutMapping("/{id}/cancel")

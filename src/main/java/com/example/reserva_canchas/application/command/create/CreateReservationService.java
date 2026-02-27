@@ -14,6 +14,8 @@ import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,7 +35,7 @@ public class CreateReservationService implements  CreateReservationUseCase {
     }
 
     @Override
-    public Reservation create(Long userId,Long fieldId, LocalDate date, LocalTime startTime, LocalTime endTime, BigDecimal price) {
+    public Reservation create(Long userId,Long fieldId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         User user = userRepositoryPort.findById(userId)
                 .orElseThrow(()-> new UserNotFoundException(userId));
 
@@ -42,6 +44,8 @@ public class CreateReservationService implements  CreateReservationUseCase {
 
         validateAvailability(fieldId, date, startTime,endTime);
 
+        BigDecimal price = getFinalPrice(startTime, endTime, field);
+
         Reservation reservation = new Reservation(user,field,date,startTime,endTime,
                 ReservationStatus.CONFIRMED, price, LocalDateTime.now());
 
@@ -49,6 +53,14 @@ public class CreateReservationService implements  CreateReservationUseCase {
     }
 
 
+    private BigDecimal getFinalPrice(LocalTime startTime, LocalTime endTime, Field field){
+        long minutos = Duration.between(startTime, endTime).toMinutes();
+
+        BigDecimal horas = BigDecimal.valueOf(minutos)
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+        return field.getPrice().multiply(horas);
+    }
 
     private void validateAvailability(Long fieldId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         List<Reservation> reservasExistentes = reservationRepositoryPort.findByFieldIdAndDate(fieldId, date);
