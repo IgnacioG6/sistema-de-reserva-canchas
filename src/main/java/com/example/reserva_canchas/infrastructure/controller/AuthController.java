@@ -4,6 +4,10 @@ import com.example.reserva_canchas.infrastructure.dto.request.LoginRequestDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.AuthResponseDTO;
 import com.example.reserva_canchas.infrastructure.security.JwtService;
 import com.example.reserva_canchas.infrastructure.security.UserDetailsAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Endpoint para autenticación de usuarios")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -25,6 +30,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y devuelve un token JWT")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login exitoso"),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
+    })
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())

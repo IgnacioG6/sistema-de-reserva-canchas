@@ -7,6 +7,11 @@ import com.example.reserva_canchas.infrastructure.dto.request.CreateUserRequesto
 import com.example.reserva_canchas.infrastructure.dto.request.UpdateUserRequestDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.UserResponseDTO;
 import com.example.reserva_canchas.infrastructure.mapper.UserMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Tag(name = "Usuarios", description = "Endpoint para gestión de usuarios")
 public class UserController {
 
     private final ChangePasswordUseCase  changePasswordUseCase;
@@ -28,6 +34,12 @@ public class UserController {
     private final GetUserUseCase getUserUseCase;
 
     @PostMapping
+    @Operation(summary = "Registrar usuario", description = "Crea un nuevo usuario con rol CLIENT")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "409", description = "Email ya registrado")
+    })
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody CreateUserRequestoDTO userDto){
 
         User user = createUserUseCase.create(
@@ -43,6 +55,13 @@ public class UserController {
 
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener usuario por ID", description = "Retorna un usuario. CLIENT solo puede ver el suyo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.user.id")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable  Long id){
         User user = getUserUseCase.getUserById(id);
@@ -50,6 +69,12 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar usuarios", description = "Retorna todos los usuarios. Solo ADMIN")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista obtenida"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos")
+    })
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<UserResponseDTO>> getUsers(
             @RequestParam(required = false) Boolean active) {
 
@@ -62,6 +87,13 @@ public class UserController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.user.id")
+    @Operation(summary = "Actualizar usuario", description = "Actualiza email y teléfono. CLIENT solo puede modificar el suyo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequestDTO userDto){
 
         updateUserUseCase.update(id,userDto.email(),userDto.telephone());
@@ -72,6 +104,13 @@ public class UserController {
 
     @PutMapping("/{id}/change-password")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.user.id")
+    @Operation(summary = "Cambiar contraseña", description = "CLIENT solo puede cambiar la suya")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Contraseña actualizada"),
+            @ApiResponse(responseCode = "400", description = "Contraseña incorrecta"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos")
+    })
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@PathVariable Long id,@Valid @RequestBody ChangePasswordRequestDTO passwordDto){
 
         changePasswordUseCase.changePassword(id,passwordDto.oldPassword(),passwordDto.newPassword());
@@ -81,6 +120,13 @@ public class UserController {
 
 
     @PutMapping("/{id}/deactivate")
+    @Operation(summary = "Desactivar usuario", description = "Solo ADMIN")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuario desactivado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> desactivateUser(@PathVariable Long id){
         desactivateUserUseCase.desactivateUser(id);
         return ResponseEntity.noContent().build();
