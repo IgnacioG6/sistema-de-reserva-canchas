@@ -46,4 +46,8 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                 .map(UserMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserMapper::toDomain);    }
 }

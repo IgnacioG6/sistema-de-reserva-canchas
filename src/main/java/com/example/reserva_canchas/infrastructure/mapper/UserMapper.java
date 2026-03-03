@@ -18,7 +18,8 @@ public class UserMapper {
                 user.getName(),
                 user.getTelephone(),
                 user.getAddress(),
-                user.isActive());
+                user.isActive(),
+                user.getRole());
     }
 
 
@@ -34,7 +35,8 @@ public class UserMapper {
                 entity.getName(),
                 entity.getTelephone(),
                 entity.getAddress(),
-                entity.isActive()
+                entity.isActive(),
+                entity.getRole()
         );
     }
 

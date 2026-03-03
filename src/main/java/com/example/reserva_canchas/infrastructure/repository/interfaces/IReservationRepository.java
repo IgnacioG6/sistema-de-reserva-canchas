@@ -14,6 +14,4 @@ public interface IReservationRepository extends JpaRepository<ReservationEntity,
 
     List<ReservationEntity> findByField_IdAndDate(Long fieldId, LocalDate date);
 
-    @Query("SELECT r FROM ReservationEntity r WHERE r.field.location.id = :locationId")
-    List<ReservationEntity> findAllByLocationId(@Param("locationId") Long locationId);
 }

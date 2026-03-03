@@ -23,9 +23,7 @@ public class CreateFieldService implements CreateFieldUseCase {
 
         Field field = new Field(name,type,price, true);
 
-        fieldRepository.save(field);
-
-        return field;
+        return fieldRepository.save(field);
 
     }
 }

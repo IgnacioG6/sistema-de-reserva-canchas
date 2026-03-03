@@ -1,5 +1,6 @@
 package com.example.reserva_canchas.infrastructure.entity;
 
+import com.example.reserva_canchas.domain.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,9 @@ public class UserEntity {
 
     @Column(nullable = false)
     private boolean active;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
 }

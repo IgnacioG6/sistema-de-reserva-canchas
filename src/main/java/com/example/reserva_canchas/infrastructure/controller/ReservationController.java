@@ -12,13 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/reservations")
 @RequiredArgsConstructor
 public class ReservationController {
 
@@ -52,12 +53,14 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isOwner(#id, authentication.principal.user.id)")
     public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
         Reservation reservation = getReservation.getReservationById(id);
         return ResponseEntity.ok(ReservationMapper.toResponse(reservation));
     }
 
     @GetMapping("/user/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.user.id")
     public ResponseEntity<List<ReservationResponseDTO>> getReservationByUserId(@Valid @PathVariable Long id) {
 
         List<ReservationResponseDTO> reservations = getReservation.getReservationsByUserId(id)
@@ -92,6 +95,7 @@ public class ReservationController {
 
 
     @PutMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isOwner(#id, authentication.principal.user.id)")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id){
         cancelReservation.cancelReservation(id);
         return ResponseEntity.noContent().build();

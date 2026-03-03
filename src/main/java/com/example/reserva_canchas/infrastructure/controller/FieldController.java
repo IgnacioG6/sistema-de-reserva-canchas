@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fields")
+@RequestMapping("/api/fields")
 @RequiredArgsConstructor
 public class FieldController {
 
@@ -55,15 +55,6 @@ public class FieldController {
         return ResponseEntity.ok(FieldMapper.toResponse(field));
 
     }
-
-    @GetMapping("/types/{type}")
-    public ResponseEntity<List<FieldResponseDTO>>  getAllFieldsByType(@PathVariable TypeField type){
-
-        List<FieldResponseDTO> fields = getFieldUseCase.getFieldsByType(type).stream().map(FieldMapper::toResponse).toList();
-
-        return ResponseEntity.ok(fields);
-    }
-
 
     @PutMapping("/{id}/desactivate")
     public ResponseEntity<Void> deactivate (@PathVariable Long id){

@@ -59,10 +59,4 @@ public class ReservationRepositoryAdapter implements ReservationRepositoryPort {
                 .toList();
     }
 
-    @Override
-    public List<Reservation> getReservationsByLocationId(Long locationId) {
-        return reservationRepository.findAllByLocationId(locationId).stream()
-                .map(ReservationMapper::toDomain)
-                .toList();
-    }
 }

@@ -1,5 +1,7 @@
 package com.example.reserva_canchas.domain.model;
 
+import com.example.reserva_canchas.domain.model.enums.Role;
+
 public class User {
 
     private Long id;
@@ -9,9 +11,10 @@ public class User {
     private String telephone;
     private String address;
     private boolean active;
+    private Role role;
 
     public User(Long id, String email, String password,
-                String name, String telephone, String address, boolean active) {
+                String name, String telephone, String address, boolean active, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -19,17 +22,20 @@ public class User {
         this.telephone = telephone;
         this.address = address;
         this.active = active;
+        this.role = role;
 
     }
 
     public User(String email, String password, String name,
-                String telephone, String address) {
+                String telephone, String address, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
         this.active = true;
+        this.role = role;
+
     }
 
     public void desactivate() {
@@ -111,6 +117,14 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
 
