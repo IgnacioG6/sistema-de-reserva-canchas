@@ -4,7 +4,9 @@ import com.example.reserva_canchas.domain.model.Reservation;
 import com.example.reserva_canchas.domain.port.in.reservation.CancelReservationUseCase;
 import com.example.reserva_canchas.domain.port.in.reservation.CreateReservationUseCase;
 import com.example.reserva_canchas.domain.port.in.reservation.GetReservationsUseCase;
+import com.example.reserva_canchas.domain.port.out.PaymentPort;
 import com.example.reserva_canchas.infrastructure.dto.request.CreateReservationRequestDTO;
+import com.example.reserva_canchas.infrastructure.dto.response.CreateReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.ReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.mapper.ReservationMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +35,7 @@ public class ReservationController {
     private final CancelReservationUseCase cancelReservation;
     private final CreateReservationUseCase createReservation;
     private final GetReservationsUseCase getReservation;
+    private final PaymentPort paymentPort;
 
 
     @PostMapping
@@ -43,7 +46,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "Conflicto de horario")
     })
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<ReservationResponseDTO> create(@Valid @RequestBody CreateReservationRequestDTO request) {
+    public ResponseEntity<CreateReservationResponseDTO> create(@Valid @RequestBody CreateReservationRequestDTO request) {
 
         Reservation reservation = createReservation.create(
                 request.userId(),
@@ -53,8 +56,13 @@ public class ReservationController {
                 request.endTime()
         );
 
+        String paymentUrl = paymentPort.createPayment(reservation);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ReservationMapper.toResponse(reservation));
+                .body(new CreateReservationResponseDTO(
+                        ReservationMapper.toResponse(reservation),
+                        paymentUrl
+                ));
     }
 
     @GetMapping

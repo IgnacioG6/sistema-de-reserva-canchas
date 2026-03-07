@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.mapper;
 
 import com.example.reserva_canchas.domain.model.Reservation;
+import com.example.reserva_canchas.infrastructure.dto.response.CreateReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.ReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.entity.ReservationEntity;
 
@@ -52,5 +53,6 @@ public class ReservationMapper {
                 reservation.getPriceTotal()
         );
     }
+
 
 }

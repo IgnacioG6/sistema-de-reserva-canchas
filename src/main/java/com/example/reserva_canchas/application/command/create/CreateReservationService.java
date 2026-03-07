@@ -47,7 +47,7 @@ public class CreateReservationService implements  CreateReservationUseCase {
         BigDecimal price = getFinalPrice(startTime, endTime, field);
 
         Reservation reservation = new Reservation(user,field,date,startTime,endTime,
-                ReservationStatus.CONFIRMED, price, LocalDateTime.now());
+                ReservationStatus.PENDING, price, LocalDateTime.now());
 
         return reservationRepositoryPort.save(reservation);
     }
