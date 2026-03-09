@@ -9,30 +9,27 @@ public class User {
     private String password;
     private String name;
     private String telephone;
-    private String address;
     private boolean active;
     private Role role;
 
     public User(Long id, String email, String password,
-                String name, String telephone, String address, boolean active, Role role) {
+                String name, String telephone, boolean active, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
-        this.address = address;
         this.active = active;
         this.role = role;
 
     }
 
     public User(String email, String password, String name,
-                String telephone, String address, Role role) {
+                String telephone, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.telephone = telephone;
-        this.address = address;
         this.active = true;
         this.role = role;
 
@@ -101,14 +98,6 @@ public class User {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public boolean isActive() {

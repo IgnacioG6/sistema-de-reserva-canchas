@@ -22,13 +22,13 @@ public class CreateUserService implements CreateUserUseCase {
     }
 
     @Override
-    public User create(String email, String password, String name, String telephone, String address) {
+    public User create(String email, String password, String name, String telephone) {
 
         validateData(email, password);
 
         String hashedPassword = passwordEncoderPort.encode(password);
 
-        User user = new User(email, hashedPassword, name, telephone, address, Role.CLIENT);
+        User user = new User(email, hashedPassword, name, telephone, Role.CLIENT);
 
         return userRepositoryPort.save(user);
     }

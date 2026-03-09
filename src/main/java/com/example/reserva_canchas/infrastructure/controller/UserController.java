@@ -46,8 +46,7 @@ public class UserController {
                 userDto.email(),
                 userDto.password(),
                 userDto.name(),
-                userDto.telephone(),
-                userDto.address()
+                userDto.telephone()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toResponse(user));

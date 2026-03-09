@@ -17,7 +17,6 @@ public class UserMapper {
                 user.getPassword(),
                 user.getName(),
                 user.getTelephone(),
-                user.getAddress(),
                 user.isActive(),
                 user.getRole());
     }
@@ -34,7 +33,6 @@ public class UserMapper {
                 entity.getPassword(),
                 entity.getName(),
                 entity.getTelephone(),
-                entity.getAddress(),
                 entity.isActive(),
                 entity.getRole()
         );
