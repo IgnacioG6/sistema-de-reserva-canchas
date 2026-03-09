@@ -2,7 +2,6 @@ package com.example.reserva_canchas.application.query;
 
 import com.example.reserva_canchas.domain.exception.FieldNotFoundException;
 import com.example.reserva_canchas.domain.model.Field;
-import com.example.reserva_canchas.domain.model.enums.TypeField;
 import com.example.reserva_canchas.domain.port.in.field.GetFieldUseCase;
 import com.example.reserva_canchas.domain.port.out.FieldRepositoryPort;
 import org.springframework.stereotype.Service;
@@ -26,10 +25,5 @@ public class GetFieldService implements GetFieldUseCase {
     public Field getFieldById(Long id) {
         return fieldRepositoryPort.findById(id)
                 .orElseThrow(()-> new FieldNotFoundException(id));
-    }
-
-    @Override
-    public List<Field> getFieldsByType(TypeField type) {
-        return fieldRepositoryPort.findByType(type);
     }
 }

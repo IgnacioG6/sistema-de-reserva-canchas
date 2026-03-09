@@ -1,6 +1,5 @@
 package com.example.reserva_canchas.infrastructure.entity;
 
-import com.example.reserva_canchas.domain.model.enums.TypeField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,9 +22,6 @@ public class FieldEntity {
 
     @Column(nullable = false)
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    private TypeField type;
 
     @Column(nullable = false)
     private BigDecimal price;

@@ -1,7 +1,6 @@
 package com.example.reserva_canchas.application.command.create;
 
 import com.example.reserva_canchas.domain.model.Field;
-import com.example.reserva_canchas.domain.model.enums.TypeField;
 import com.example.reserva_canchas.domain.port.in.field.CreateFieldUseCase;
 import com.example.reserva_canchas.domain.port.out.FieldRepositoryPort;
 import org.springframework.stereotype.Service;
@@ -19,9 +18,9 @@ public class CreateFieldService implements CreateFieldUseCase {
 
 
     @Override
-    public Field create(String name, TypeField type, BigDecimal price) {
+    public Field create(String name, BigDecimal price) {
 
-        Field field = new Field(name,type,price, true);
+        Field field = new Field(name, price, true);
 
         return fieldRepository.save(field);
 

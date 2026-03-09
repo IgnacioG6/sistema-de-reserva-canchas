@@ -1,7 +1,6 @@
 package com.example.reserva_canchas.infrastructure.controller;
 
 import com.example.reserva_canchas.domain.model.Field;
-import com.example.reserva_canchas.domain.model.enums.TypeField;
 import com.example.reserva_canchas.domain.port.in.field.CreateFieldUseCase;
 import com.example.reserva_canchas.domain.port.in.field.GetFieldUseCase;
 import com.example.reserva_canchas.domain.port.in.field.UpdateActiveUseCase;
@@ -43,7 +42,6 @@ public class FieldController {
 
         Field field = createFieldUseCase.create(
                 fieldDto.name(),
-                fieldDto.type(),
                 fieldDto.price());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(FieldMapper.toResponse(field));

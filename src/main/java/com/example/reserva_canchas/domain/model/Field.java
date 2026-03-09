@@ -1,7 +1,5 @@
 package com.example.reserva_canchas.domain.model;
 
-import com.example.reserva_canchas.domain.model.enums.TypeField;
-
 import java.math.BigDecimal;
 
 
@@ -9,21 +7,18 @@ public class Field {
 
     private Long id;
     private String name;
-    private TypeField type;
     private BigDecimal price;
     private boolean active;
 
-    public Field(Long id, String name, TypeField type, BigDecimal price, boolean active) {
+    public Field(Long id, String name, BigDecimal price, boolean active) {
         this.id = id;
         this.name = name;
-        this.type = type;
         this.price = price;
         this.active = active;
     }
 
-    public Field(String name, TypeField type, BigDecimal price, boolean active) {
+    public Field(String name, BigDecimal price, boolean active) {
         this.name = name;
-        this.type = type;
         this.price = price;
         this.active = active;
     }
@@ -38,14 +33,6 @@ public class Field {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public TypeField getType() {
-        return type;
-    }
-
-    public void setType(TypeField type) {
-        this.type = type;
     }
 
     public BigDecimal getPrice() {

@@ -7,7 +7,6 @@ public record FieldResponseDTO(
 
         Long id,
         String name,
-        String type,
         BigDecimal price
 
 ) {

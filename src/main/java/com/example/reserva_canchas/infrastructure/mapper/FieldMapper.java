@@ -10,11 +10,9 @@ public class FieldMapper {
 
         if(field == null) return null;
 
-
         return new FieldEntity(
                 field.getId(),
                 field.getName(),
-                field.getType(),
                 field.getPrice(),
                 field.isActive());
     }
@@ -26,7 +24,6 @@ public class FieldMapper {
         return new Field(
                 entity.getId(),
                 entity.getName(),
-                entity.getType(),
                 entity.getPrice(),
                 entity.isActive());
 
@@ -40,7 +37,6 @@ public class FieldMapper {
         return new FieldResponseDTO(
                 field.getId(),
                 field.getName(),
-                field.getType().toString(),
                 field.getPrice()
                 );
 

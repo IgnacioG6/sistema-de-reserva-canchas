@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.config.exception;
 
 import com.example.reserva_canchas.domain.exception.FieldNotFoundException;
+import com.example.reserva_canchas.domain.exception.PaymentException;
 import com.example.reserva_canchas.domain.exception.ReservationConflictException;
 import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,16 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ApiErrorResponse> handlePaymentException(PaymentException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                HttpStatus.BAD_GATEWAY.value(),
+                "Payment Error",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
