@@ -13,20 +13,16 @@ public class FieldMapper {
         return new FieldEntity(
                 field.getId(),
                 field.getName(),
-                field.getPrice(),
-                field.isActive());
+                field.getPrice());
     }
 
     public static Field toDomain(FieldEntity entity) {
 
         if(entity == null) return null;
 
-        return new Field(
-                entity.getId(),
-                entity.getName(),
-                entity.getPrice(),
-                entity.isActive());
-
+        Field field = new Field(entity.getName(), entity.getPrice());
+        field.assignId(entity.getId());
+        return field;
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.reserva_canchas.application.command.create;
 
+import com.example.reserva_canchas.application.command.dto.CreateUserCommand;
 import com.example.reserva_canchas.domain.exception.EmailDuplicateException;
 import com.example.reserva_canchas.domain.exception.InvalidPasswordException;
 import com.example.reserva_canchas.domain.model.User;
@@ -7,6 +8,7 @@ import com.example.reserva_canchas.domain.model.enums.Role;
 import com.example.reserva_canchas.domain.port.in.user.CreateUserUseCase;
 import com.example.reserva_canchas.domain.port.out.PasswordEncoderPort;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,23 +24,21 @@ public class CreateUserService implements CreateUserUseCase {
     }
 
     @Override
-    public User create(String email, String password, String name, String telephone) {
+    @Transactional
+    public User createUser(CreateUserCommand command) {
 
-        validateData(email, password);
+        validateData(command.email());
 
-        String hashedPassword = passwordEncoderPort.encode(password);
+        String hashedPassword = passwordEncoderPort.encode(command.password());
 
-        User user = new User(email, hashedPassword, name, telephone, Role.CLIENT);
+        User user = new User(command.email(), hashedPassword, command.name());
 
         return userRepositoryPort.save(user);
     }
 
-    private void validateData(String email, String password) {
+    private void validateData(String email) {
         if (userRepositoryPort.existsByEmail(email)) {
             throw new EmailDuplicateException("Email already exists");
-        }
-        if (password.length() < 6) {
-            throw new InvalidPasswordException("Password too short");
         }
     }
 }

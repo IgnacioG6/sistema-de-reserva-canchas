@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.security;
 
 import com.example.reserva_canchas.domain.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 public class UserDetailsAdapter implements UserDetails {
 
     private final User user;
@@ -19,7 +21,7 @@ public class UserDetailsAdapter implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String authority = "ROLE_" + user.getRole().name();
-        System.out.println(">>> Authority generada: " + authority);
+        log.debug("Authority: {}", authority);
         return List.of(new SimpleGrantedAuthority(authority));
     }
 

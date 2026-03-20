@@ -1,8 +1,10 @@
 package com.example.reserva_canchas.application.command.create;
 
+import com.example.reserva_canchas.application.command.dto.CreateFieldCommand;
 import com.example.reserva_canchas.domain.model.Field;
 import com.example.reserva_canchas.domain.port.in.field.CreateFieldUseCase;
 import com.example.reserva_canchas.domain.port.out.FieldRepositoryPort;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,11 +18,11 @@ public class CreateFieldService implements CreateFieldUseCase {
         this.fieldRepository = fieldRepository;
     }
 
-
     @Override
-    public Field create(String name, BigDecimal price) {
+    @Transactional
+    public Field createField(CreateFieldCommand command) {
 
-        Field field = new Field(name, price, true);
+        Field field = new Field(command.name(), command.price());
 
         return fieldRepository.save(field);
 

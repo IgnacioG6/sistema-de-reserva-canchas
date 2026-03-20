@@ -5,6 +5,7 @@ import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.UpdateUserUseCase;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,23 +19,17 @@ public class UpdateUserService implements UpdateUserUseCase {
 
 
     @Override
-    public User update(Long id, String email, String telephone) {
+    @Transactional
+    public User update(Long id, String email) {
 
         User user = userRepositoryPort.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        if (!user.getEmail().equals(email)) {
-            if (userRepositoryPort.existsByEmail(email)) {
-                throw new EmailDuplicateException(email);
+        if (userRepositoryPort.existsByEmail(email)) {
+        throw new EmailDuplicateException(email);
             }
 
-            user.setEmail(email);
-        }
-
-        if (!user.getTelephone().equals(telephone)) {
-            user.setTelephone(telephone);
-        }
-
+        user.changeEmail(email);
 
         return userRepositoryPort.save(user);
 

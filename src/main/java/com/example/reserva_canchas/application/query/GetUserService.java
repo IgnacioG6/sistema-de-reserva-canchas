@@ -28,8 +28,4 @@ public class GetUserService implements GetUserUseCase {
                 .orElseThrow(()-> new UserNotFoundException(id));
     }
 
-    @Override
-    public List<User> getUserActive() {
-        return userRepositoryPort.findByActive();
-    }
 }

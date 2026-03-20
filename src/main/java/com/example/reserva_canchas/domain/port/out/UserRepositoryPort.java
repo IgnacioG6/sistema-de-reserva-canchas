@@ -10,6 +10,6 @@ public interface UserRepositoryPort {
     Optional<User> findById(Long id);
     List<User> findAll();
     boolean existsByEmail(String email);
-    List<User> findByActive();
     Optional<User> findByEmail(String email);
+    boolean existsById(Long id);
 }

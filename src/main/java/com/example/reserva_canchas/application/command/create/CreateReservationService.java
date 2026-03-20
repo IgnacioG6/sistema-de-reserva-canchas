@@ -1,16 +1,22 @@
 package com.example.reserva_canchas.application.command.create;
 
+import com.example.reserva_canchas.application.command.dto.CreateReservationCommand;
+import com.example.reserva_canchas.application.command.dto.CreateReservationResult;
 import com.example.reserva_canchas.domain.exception.FieldNotFoundException;
 import com.example.reserva_canchas.domain.exception.ReservationConflictException;
 import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import com.example.reserva_canchas.domain.model.Field;
 import com.example.reserva_canchas.domain.model.Reservation;
 import com.example.reserva_canchas.domain.model.User;
+import com.example.reserva_canchas.domain.model.enums.ReservationDuration;
 import com.example.reserva_canchas.domain.model.enums.ReservationStatus;
 import com.example.reserva_canchas.domain.port.in.reservation.CreateReservationUseCase;
 import com.example.reserva_canchas.domain.port.out.FieldRepositoryPort;
+import com.example.reserva_canchas.domain.port.out.PaymentPort;
 import com.example.reserva_canchas.domain.port.out.ReservationRepositoryPort;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,48 +28,40 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CreateReservationService implements  CreateReservationUseCase {
 
     private final ReservationRepositoryPort reservationRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final FieldRepositoryPort fieldRepositoryPort;
-
-    public CreateReservationService(ReservationRepositoryPort reservationRepositoryPort, UserRepositoryPort userRepositoryPort, FieldRepositoryPort fieldRepositoryPort) {
-        this.reservationRepositoryPort = reservationRepositoryPort;
-        this.userRepositoryPort = userRepositoryPort;
-        this.fieldRepositoryPort = fieldRepositoryPort;
-    }
+    private final PaymentPort paymentPort;
 
     @Override
-    public Reservation create(Long userId,Long fieldId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        User user = userRepositoryPort.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException(userId));
+    @Transactional
+    public CreateReservationResult createReservation(CreateReservationCommand command) {
+        User user = userRepositoryPort.findById(command.userId())
+                .orElseThrow(()-> new UserNotFoundException(command.userId()));
 
-        Field field = fieldRepositoryPort.findById(fieldId)
-                .orElseThrow(()-> new FieldNotFoundException(fieldId));
+        Field field = fieldRepositoryPort.findById(command.fieldId())
+                .orElseThrow(()-> new FieldNotFoundException(command.fieldId()));
 
-        validateAvailability(fieldId, date, startTime,endTime);
+        validateAvailability(command.fieldId(), command.date(), command.startTime(), command.duration());
 
-        BigDecimal price = getFinalPrice(startTime, endTime, field);
+        BigDecimal price = command.duration().calculatePrice(field.getPrice());
 
-        Reservation reservation = new Reservation(user,field,date,startTime,endTime,
-                ReservationStatus.PENDING, price, LocalDateTime.now());
+        Reservation reservation = new Reservation(user,field,command.date(),command.startTime(),price,command.duration());
 
-        return reservationRepositoryPort.save(reservation);
+        Reservation savedReservation = reservationRepositoryPort.save(reservation);
+
+        String link = paymentPort.createPayment(savedReservation);
+
+        return new CreateReservationResult(savedReservation, link);
     }
 
 
-    private BigDecimal getFinalPrice(LocalTime startTime, LocalTime endTime, Field field){
-        long minutos = Duration.between(startTime, endTime).toMinutes();
-
-        BigDecimal horas = BigDecimal.valueOf(minutos)
-                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-
-        return field.getPrice().multiply(horas);
-    }
-
-    private void validateAvailability(Long fieldId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    private void validateAvailability(Long fieldId, LocalDate date, LocalTime startTime, ReservationDuration duration) {
         List<Reservation> reservasExistentes = reservationRepositoryPort.findByFieldIdAndDate(fieldId, date);
+        LocalTime endTime = startTime.plusMinutes(duration.getMinutes());
 
         boolean hayConflicto = reservasExistentes.stream()
                 .anyMatch(reserva ->

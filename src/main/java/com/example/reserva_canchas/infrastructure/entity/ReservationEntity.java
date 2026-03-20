@@ -1,6 +1,7 @@
 package com.example.reserva_canchas.infrastructure.entity;
 
 
+import com.example.reserva_canchas.domain.model.enums.ReservationDuration;
 import com.example.reserva_canchas.domain.model.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,15 +36,20 @@ public class ReservationEntity {
 
     @Column(nullable = false)
     private LocalDate date;
+
     @Column(nullable = false)
     private LocalTime startTime;
-    @Column(nullable = false)
-    private LocalTime endTime;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationDuration duration;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
+
     @Column(nullable = false)
     private BigDecimal priceTotal;
+
     @Column(nullable = false)
     private LocalDateTime dateCreation;
 

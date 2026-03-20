@@ -1,15 +1,17 @@
-package com.example.reserva_canchas.infrastructure.repository;
+package com.example.reserva_canchas.infrastructure.payment;
 
 import com.example.reserva_canchas.domain.exception.PaymentException;
 import com.example.reserva_canchas.domain.model.Reservation;
 import com.example.reserva_canchas.domain.port.out.PaymentPort;
 import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +23,14 @@ public class MercadoPagoAdapter implements PaymentPort {
     @Value("${mercadopago.access.token}")
     private String accessToken;
 
+    @PostConstruct
+    public void init() {
+        MercadoPagoConfig.setAccessToken(accessToken);
+    }
+
     @Override
     public String createPayment(Reservation reservation) {
         try {
-            MercadoPagoConfig.setAccessToken(accessToken);
-
             PreferenceItemRequest item = PreferenceItemRequest.builder()
                     .title("Reserva cancha - " + reservation.getId())
                     .quantity(1)
@@ -33,8 +38,17 @@ public class MercadoPagoAdapter implements PaymentPort {
                     .currencyId("ARS")
                     .build();
 
+            PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
+                    .success("http://localhost:4200/reservas/exito")
+                    .failure("http://localhost:4200/reservas/fallo")
+                    .pending("http://localhost:4200/reservas/pendiente")
+                    .build();
+
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(List.of(item))
+                    .externalReference(reservation.getId().toString())
+                    .backUrls(backUrls)
+                    .autoReturn("approved")
                     .build();
 
             PreferenceClient client = new PreferenceClient();

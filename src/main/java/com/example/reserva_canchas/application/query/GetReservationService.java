@@ -1,21 +1,22 @@
 package com.example.reserva_canchas.application.query;
 
 import com.example.reserva_canchas.domain.exception.ReservationNotFoundException;
+import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import com.example.reserva_canchas.domain.model.Reservation;
 import com.example.reserva_canchas.domain.port.in.reservation.GetReservationsUseCase;
 import com.example.reserva_canchas.domain.port.out.ReservationRepositoryPort;
+import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GetReservationService implements GetReservationsUseCase {
     private final ReservationRepositoryPort reservationRepositoryPort;
-
-    public GetReservationService(ReservationRepositoryPort reservationRepositoryPort) {
-        this.reservationRepositoryPort = reservationRepositoryPort;
-    }
+    private final UserRepositoryPort userRepositoryPort;
 
     @Override
     public List<Reservation> getReservations() {
@@ -30,6 +31,10 @@ public class GetReservationService implements GetReservationsUseCase {
 
     @Override
     public List<Reservation> getReservationsByUserId(Long id) {
+        if (!userRepositoryPort.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
         return reservationRepositoryPort.findByUserId(id);
     }
 

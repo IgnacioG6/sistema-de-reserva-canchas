@@ -1,6 +1,9 @@
 package com.example.reserva_canchas.infrastructure.controller;
 
+import com.example.reserva_canchas.application.command.dto.CreateReservationCommand;
+import com.example.reserva_canchas.application.command.dto.CreateReservationResult;
 import com.example.reserva_canchas.domain.model.Reservation;
+import com.example.reserva_canchas.domain.model.enums.Role;
 import com.example.reserva_canchas.domain.port.in.reservation.CancelReservationUseCase;
 import com.example.reserva_canchas.domain.port.in.reservation.CreateReservationUseCase;
 import com.example.reserva_canchas.domain.port.in.reservation.GetReservationsUseCase;
@@ -9,6 +12,7 @@ import com.example.reserva_canchas.infrastructure.dto.request.CreateReservationR
 import com.example.reserva_canchas.infrastructure.dto.response.CreateReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.ReservationResponseDTO;
 import com.example.reserva_canchas.infrastructure.mapper.ReservationMapper;
+import com.example.reserva_canchas.infrastructure.security.UserDetailsAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -46,22 +52,30 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "Conflicto de horario")
     })
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<CreateReservationResponseDTO> create(@Valid @RequestBody CreateReservationRequestDTO request) {
+    @PreAuthorize("hasRole('ADMIN') or #request.userId() == authentication.principal.user.id")
+    public ResponseEntity<CreateReservationResponseDTO> create(@Valid @RequestBody CreateReservationRequestDTO request, Authentication authentication) {
 
-        Reservation reservation = createReservation.create(
-                request.userId(),
+        UserDetailsAdapter principal = (UserDetailsAdapter) authentication.getPrincipal();
+        Long authenticatedUserId = principal.getUser().getId();
+
+        Long userId = principal.getUser().getRole().equals(Role.ADMIN)
+                ? request.userId()
+                : authenticatedUserId;
+
+        CreateReservationCommand command = new CreateReservationCommand(
+                userId,
                 request.fieldId(),
                 request.date(),
                 request.startTime(),
-                request.endTime()
+                request.duration()
         );
 
-        String paymentUrl = paymentPort.createPayment(reservation);
+        CreateReservationResult result = createReservation.createReservation(command);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateReservationResponseDTO(
-                        ReservationMapper.toResponse(reservation),
-                        paymentUrl
+                        ReservationMapper.toResponse(result.reservation()),
+                        result.paymentUrl()
                 ));
     }
 
@@ -129,7 +143,7 @@ public class ReservationController {
                 .toList());
     }
 
-    @GetMapping("/field/{id}")
+    @GetMapping("/field/{fieldId}")
     @Operation(summary = "Listar reservas por cancha", description = "Retorna reservas de una cancha por fecha")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista obtenida"),

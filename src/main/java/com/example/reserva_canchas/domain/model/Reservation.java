@@ -1,11 +1,14 @@
 package com.example.reserva_canchas.domain.model;
 
+import com.example.reserva_canchas.domain.exception.*;
+import com.example.reserva_canchas.domain.model.enums.ReservationDuration;
 import com.example.reserva_canchas.domain.model.enums.ReservationStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Reservation {
     private Long id;
@@ -17,45 +20,68 @@ public class Reservation {
     private ReservationStatus status;
     private BigDecimal priceTotal;
     private LocalDateTime dateCreation;
-
-    public Reservation(Long id, User user, Field field, LocalDate date,
-                       LocalTime startTime, LocalTime endTime, ReservationStatus status, BigDecimal priceTotal, LocalDateTime dateCreation) {
-        this.id = id;
-        this.user = user;
-        this.field = field;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.status = status;
-        this.priceTotal = priceTotal;
-        this.dateCreation = dateCreation;
-    }
+    private ReservationDuration duration;
 
     public Reservation(User user, Field field, LocalDate date,
-                       LocalTime startTime, LocalTime endTime, ReservationStatus status, BigDecimal priceTotal, LocalDateTime dateCreation) {
+                       LocalTime startTime, BigDecimal priceTotal,
+                       ReservationDuration duration) {
+        Objects.requireNonNull(user, "user es requerido");
+        Objects.requireNonNull(field, "field es requerido");
+        Objects.requireNonNull(date, "date es requerido");
+        Objects.requireNonNull(startTime, "startTime es requerido");
+        Objects.requireNonNull(priceTotal, "priceTotal es requerido");
+        Objects.requireNonNull(duration, "duration es requerido");
+
+        if (date.isBefore(LocalDate.now())) {
+            throw new ReservationPastDate("No se puede reservar una fecha pasada");
+        }
+
         this.user = user;
         this.field = field;
         this.date = date;
         this.startTime = startTime;
-        this.endTime = endTime;
-        this.status = status;
+        this.endTime = startTime.plusMinutes(duration.getMinutes());
+        this.status = ReservationStatus.PENDING;
         this.priceTotal = priceTotal;
-        this.dateCreation = dateCreation;
+        this.dateCreation = LocalDateTime.now();
+        this.duration = duration;
+
     }
 
     public void cancel() {
-        if (this.status == ReservationStatus.CANCELLED) {
-            throw new IllegalStateException("The reservation has already been cancelled");
+        if (this.status != ReservationStatus.CONFIRMED) {
+            throw new InvalidReservationStateException("Solo se puede cancelar una reserva CONFIRMADA");
         }
 
+        validateDate(this.date, this.startTime);
+
+        this.status = ReservationStatus.CANCELLED;
+    }
+
+    public void confirm() {
+        if (this.status != ReservationStatus.PENDING) {
+            throw new InvalidReservationStateException("Solo se puede confirmar una reserva PENDIENTE");
+        }
+
+        validateDate(this.date, this.startTime);
+
+        this.status = ReservationStatus.CONFIRMED;
+    }
+
+
+    private void validateDate(LocalDate date, LocalTime startTime) {
         LocalDateTime dateReservation = LocalDateTime.of(date, startTime);
 
         if (dateReservation.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Past reservations cannot be cancelled");
+            throw new ReservationPastDate("No se puede modificar una reserva pasada");
         }
+    }
 
-        setStatus(ReservationStatus.CANCELLED);
-
+    public void assignId(Long id) {
+        if (this.id != null) {
+            throw new ReservationWithAssignedIdException("La reserva ya tiene un id asignado");
+        }
+        this.id = id;
     }
 
     public Long getId() {
@@ -66,63 +92,40 @@ public class Reservation {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Field getField() {
         return field;
-    }
-
-    public void setField(Field field) {
-        this.field = field;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
 
     public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
 
     public ReservationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
-    }
 
     public BigDecimal getPriceTotal() {
         return priceTotal;
     }
 
-    public void setPriceTotal(BigDecimal priceTotal) {
-        this.priceTotal = priceTotal;
-    }
 
     public LocalDateTime getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(LocalDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public ReservationDuration getDuration() {
+        return duration;
     }
+
 }

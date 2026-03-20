@@ -4,6 +4,7 @@ import com.example.reserva_canchas.domain.exception.ReservationNotFoundException
 import com.example.reserva_canchas.domain.model.Reservation;
 import com.example.reserva_canchas.domain.port.in.reservation.CancelReservationUseCase;
 import com.example.reserva_canchas.domain.port.out.ReservationRepositoryPort;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class CancelReservationService implements CancelReservationUseCase {
     }
 
     @Override
+    @Transactional
     public void cancelReservation(Long id) {
         Reservation reservation = reservationRepositoryPort.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(id));

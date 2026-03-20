@@ -6,12 +6,15 @@ import java.time.LocalTime;
 
 public record ReservationResponseDTO(
 
+        Long id,
         String name,
         String fieldName,
-        String typeField,
         LocalTime startTime,
+        LocalTime endTime,
+        String duration,
         LocalDate date,
-        BigDecimal price
+        BigDecimal price,
+        String status
 
 
 ) {

@@ -40,14 +40,14 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         return userRepository.existsByEmail(email);
     }
 
-    @Override
-    public List<User> findByActive() {
-        return userRepository.findByActiveTrue().stream()
-                .map(UserMapper::toDomain)
-                .toList();
-    }
 
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email).map(UserMapper::toDomain);    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
 }

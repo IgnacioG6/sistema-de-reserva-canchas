@@ -16,24 +16,18 @@ public class UserMapper {
                 user.getEmail(),
                 user.getPassword(),
                 user.getName(),
-                user.getTelephone(),
-                user.isActive(),
                 user.getRole());
     }
 
 
     public static User toDomain(UserEntity entity) {
+        if (entity == null) return null;
 
-        if(entity == null) return null;
-
-
-        return new User(
+        return User.reconstruct(
                 entity.getId(),
                 entity.getEmail(),
                 entity.getPassword(),
                 entity.getName(),
-                entity.getTelephone(),
-                entity.isActive(),
                 entity.getRole()
         );
     }

@@ -1,9 +1,9 @@
 package com.example.reserva_canchas.infrastructure.controller;
 
+import com.example.reserva_canchas.application.command.dto.CreateFieldCommand;
 import com.example.reserva_canchas.domain.model.Field;
 import com.example.reserva_canchas.domain.port.in.field.CreateFieldUseCase;
 import com.example.reserva_canchas.domain.port.in.field.GetFieldUseCase;
-import com.example.reserva_canchas.domain.port.in.field.UpdateActiveUseCase;
 import com.example.reserva_canchas.infrastructure.dto.request.CreateFieldRequestDTO;
 import com.example.reserva_canchas.infrastructure.dto.response.FieldResponseDTO;
 import com.example.reserva_canchas.infrastructure.mapper.FieldMapper;
@@ -28,7 +28,6 @@ public class FieldController {
 
     private final CreateFieldUseCase createFieldUseCase;
     private final GetFieldUseCase getFieldUseCase;
-    private final UpdateActiveUseCase updateActiveUseCase;
 
     @PostMapping
     @Operation(summary = "Crear cancha", description = "Crea una nueva cancha. Solo ADMIN")
@@ -40,9 +39,9 @@ public class FieldController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<FieldResponseDTO>  create(@Valid @RequestBody CreateFieldRequestDTO fieldDto){
 
-        Field field = createFieldUseCase.create(
-                fieldDto.name(),
-                fieldDto.price());
+        CreateFieldCommand command = new CreateFieldCommand(fieldDto.name(),fieldDto.price());
+
+        Field field = createFieldUseCase.createField(command);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(FieldMapper.toResponse(field));
 
@@ -79,31 +78,7 @@ public class FieldController {
 
     }
 
-    @PutMapping("/{id}/desactivate")
-    @Operation(summary = "Activar cancha", description = "Activa una cancha desactivada. Solo ADMIN")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Cancha activada"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos"),
-            @ApiResponse(responseCode = "404", description = "Cancha no encontrada")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> deactivate (@PathVariable Long id){
-        updateActiveUseCase.updateActive(id, false);
-        return ResponseEntity.noContent().build();
-    }
 
-    @PutMapping("/{id}/activate")
-    @Operation(summary = "Desactivar cancha", description = "Desactiva una cancha activa. Solo ADMIN")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Cancha desactivada"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos"),
-            @ApiResponse(responseCode = "404", description = "Cancha no encontrada")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> activate (@PathVariable Long id){
-        updateActiveUseCase.updateActive(id, true);
-        return ResponseEntity.noContent().build();
-    }
 
 
 

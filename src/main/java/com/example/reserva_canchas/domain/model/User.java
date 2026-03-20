@@ -1,6 +1,9 @@
 package com.example.reserva_canchas.domain.model;
 
+import com.example.reserva_canchas.domain.exception.*;
 import com.example.reserva_canchas.domain.model.enums.Role;
+
+import java.util.Objects;
 
 public class User {
 
@@ -8,55 +11,64 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private String telephone;
     private boolean active;
     private Role role;
 
-    public User(Long id, String email, String password,
-                String name, String telephone, boolean active, Role role) {
-        this.id = id;
+
+    public User(String email, String password, String name) {
+
+        Objects.requireNonNull(email, "email es requerido");
+        Objects.requireNonNull(password, "contraseña es requerido");
+        Objects.requireNonNull(name, "name es requerido");
+
+        if (password.length() < 6) {
+            throw new InvalidPasswordException("Password too short");
+        }
+
         this.email = email;
         this.password = password;
         this.name = name;
-        this.telephone = telephone;
-        this.active = active;
-        this.role = role;
-
-    }
-
-    public User(String email, String password, String name,
-                String telephone, Role role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.telephone = telephone;
         this.active = true;
-        this.role = role;
+        this.role = Role.CLIENT;
 
     }
+
+
+    public static User reconstruct(Long id, String email, String password,
+                                   String name, Role role) {
+        User user = new User(email, password, name);
+        user.assignId(id);
+        user.role = role;
+        return user;
+    }
+
+
+    public void assignId(Long id) {
+        if (this.id != null) {
+            throw new UserWithAssignedIdException("El usuario ya tiene un id asignado");
+        }
+        this.id = id;
+    }
+
 
     public void desactivate() {
         if (!this.active) {
-            throw new IllegalStateException("This user is now deactivated");
+            throw new UserDisabledException("This user is deactivated");
         }
 
         this.active = false;
 
     }
 
-    public void updatePassword(String oldPasswordProvided, String newPassword) {
-        if(oldPasswordProvided.equals(newPassword)) {
-            throw new IllegalArgumentException("The password cannot be the same as the previous one.");
-        }
+    public void updatePassword(String encodedNewPassword) {
+        this.password = encodedNewPassword;
+    }
 
-        if(newPassword.length() < 6) {
-            throw new IllegalArgumentException("The password cannot be less than 6 characters.");
+    public void changeEmail(String email){
+        if (this.email.equals(email)) {
+            throw new EmailInvalidException("El correo electrónico no puede ser el mismo que el anterior.");
         }
-
-        if (!password.equals(oldPasswordProvided)) {
-            throw new IllegalArgumentException("The passwords don't match.");
-        }
-        this.password = newPassword;
+        this.email = email;
     }
 
 
@@ -64,56 +76,25 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
 

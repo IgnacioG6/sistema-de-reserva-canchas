@@ -4,6 +4,7 @@ import com.example.reserva_canchas.domain.exception.UserNotFoundException;
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.DesactivateUserUseCase;
 import com.example.reserva_canchas.domain.port.out.UserRepositoryPort;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class DesactivateUserService implements DesactivateUserUseCase {
     }
 
     @Override
+    @Transactional
     public void desactivateUser(Long id) {
         User user = userRepositoryPort.findById(id).orElseThrow(()-> new UserNotFoundException(id));
 

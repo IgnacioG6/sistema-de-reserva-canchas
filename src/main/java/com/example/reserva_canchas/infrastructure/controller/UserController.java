@@ -1,5 +1,6 @@
 package com.example.reserva_canchas.infrastructure.controller;
 
+import com.example.reserva_canchas.application.command.dto.CreateUserCommand;
 import com.example.reserva_canchas.domain.model.User;
 import com.example.reserva_canchas.domain.port.in.user.*;
 import com.example.reserva_canchas.infrastructure.dto.request.ChangePasswordRequestDTO;
@@ -42,12 +43,9 @@ public class UserController {
     })
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody CreateUserRequestoDTO userDto){
 
-        User user = createUserUseCase.create(
-                userDto.email(),
-                userDto.password(),
-                userDto.name(),
-                userDto.telephone()
-        );
+        CreateUserCommand command = new CreateUserCommand(userDto.email(),userDto.password(),userDto.name());
+
+        User user = createUserUseCase.createUser(command);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toResponse(user));
     }
@@ -74,12 +72,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Sin permisos")
     })
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<List<UserResponseDTO>> getUsers(
-            @RequestParam(required = false) Boolean active) {
-
-        if (active != null && active) {
-            return ResponseEntity.ok(getUserUseCase.getUserActive().stream().map(UserMapper::toResponse).toList());
-        }
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
 
         return ResponseEntity.ok(getUserUseCase.getUsers().stream().map(UserMapper::toResponse).toList());
     }
@@ -95,7 +88,7 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequestDTO userDto){
 
-        updateUserUseCase.update(id,userDto.email(),userDto.telephone());
+        updateUserUseCase.update(id,userDto.email());
 
         return ResponseEntity.noContent().build();
     }
@@ -118,18 +111,6 @@ public class UserController {
     }
 
 
-    @PutMapping("/{id}/deactivate")
-    @Operation(summary = "Desactivar usuario", description = "Solo ADMIN")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Usuario desactivado"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> desactivateUser(@PathVariable Long id){
-        desactivateUserUseCase.desactivateUser(id);
-        return ResponseEntity.noContent().build();
-    }
 
 
 }

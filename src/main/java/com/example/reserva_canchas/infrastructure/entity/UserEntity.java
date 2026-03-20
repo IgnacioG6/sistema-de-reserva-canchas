@@ -26,11 +26,6 @@ public class UserEntity {
     private String password;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String telephone;
-
-    @Column(nullable = false)
-    private boolean active;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
